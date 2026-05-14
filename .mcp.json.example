@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "whatsapp": {
+      "command": "bun",
+      "args": ["/home/USER/zel/whatsapp-mcp.ts"]
+    },
+    "_comment_obsidian": "OPCIONAL — descomente se você usa um vault Obsidian como base de conhecimento",
+    "obsidian": {
+      "command": "npx",
+      "args": [
+        "@bitbonsai/mcpvault@latest",
+        "/home/USER/vault"
+      ]
+    },
+    "_comment_n8n": "OPCIONAL — descomente se você usa n8n e quer expor automações ao Claude. Mova N8N_API_KEY pra .env e referencie via $",
+    "n8n": {
+      "command": "node",
+      "args": [
+        "/usr/lib/node_modules/n8n-mcp/dist/mcp/index.js"
+      ],
+      "env": {
+        "MCP_MODE": "stdio",
+        "N8N_API_URL": "https://n8n.seu-dominio.com",
+        "N8N_API_KEY": "SUBSTITUA-PELA-SUA-CHAVE-OU-MOVA-PRO-.env"
+      }
+    }
+  }
+}

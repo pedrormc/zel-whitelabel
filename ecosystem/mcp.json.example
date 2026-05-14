@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "npx",
+      "args": [
+        "@bitbonsai/mcpvault@latest",
+        "/root/obsidiano"
+      ],
+      "disabled": false
+    },
+    "n8n": {
+      "command": "node",
+      "args": [
+        "/usr/lib/node_modules/n8n-mcp/dist/mcp/index.js"
+      ],
+      "env": {
+        "MCP_MODE": "stdio",
+        "N8N_API_URL": "https://n8n.YOUR-DOMAIN.com",
+        "N8N_API_KEY": "YOUR_N8N_API_KEY"
+      },
+      "disabled": false
+    }
+  }
+}

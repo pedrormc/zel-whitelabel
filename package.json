@@ -1,0 +1,23 @@
+{
+  "name": "zel",
+  "version": "2.0.0",
+  "description": "Assistente pessoal de produtividade via WhatsApp — Claude Code Channel + Evolution API + Obsidian.",
+  "scripts": {
+    "channel": "bun whatsapp-channel.ts",
+    "reminders": "node reminder-checker.js",
+    "briefing": "node proactive.js daily-briefing",
+    "review": "node proactive.js day-review"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SEU_USER/zel-whitelabel.git"
+  },
+  "license": "ISC",
+  "homepage": "https://github.com/SEU_USER/zel-whitelabel#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "dotenv": "^17.3.1",
+    "zod": "^3.24.0"
+  }
+}

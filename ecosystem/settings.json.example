@@ -1,0 +1,55 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "ECC_HOOK_PROFILE": "strict"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/scripts/claude-notify-vps.js",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "everything-claude-code@everything-claude-code": true,
+    "superpowers@superpowers-marketplace": true,
+    "ralph-skills@ralph-marketplace": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true
+  },
+  "extraKnownMarketplaces": {
+    "everything-claude-code": {
+      "source": {
+        "source": "github",
+        "repo": "affaan-m/everything-claude-code"
+      }
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "ralph-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "snarktank/ralph"
+      }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": {
+        "source": "github",
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+      }
+    }
+  },
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest"
+}
