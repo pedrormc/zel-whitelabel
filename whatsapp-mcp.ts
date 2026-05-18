@@ -165,7 +165,17 @@ mcp.setRequestHandler(CallToolRequestSchema, async req => {
         const chat_id = args.chat_id as string
         const text = args.text as string
 
-        const number = chat_id.replace('@s.whatsapp.net', '')
+        // Defense in depth: webhook should already normalize @lid → @s.whatsapp.net
+        // before this reaches Claude. If a chat_id slips through in @lid format,
+        // sendEvolutionText would build an invalid JID — reject early with a clear msg.
+        const number = chat_id
+          .replace(/@s\.whatsapp\.net$/, '')
+          .replace(/:\d+$/, '')
+        if (number.endsWith('@lid')) {
+          throw new Error(
+            `chat_id ${chat_id} is @lid format — expected @s.whatsapp.net (webhook should normalize upstream)`,
+          )
+        }
         if (number !== OWNER_WHATSAPP_NUMBER) {
           throw new Error(`chat ${chat_id} not allowed — only ${OWNER_WHATSAPP_NUMBER}`)
         }

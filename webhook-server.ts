@@ -152,9 +152,18 @@ async function handleWebhook(data: Record<string, any>): Promise<void> {
   if (!key) return
   if (key.fromMe) return
 
-  const senderJid: string = key.remoteJid || ''
-  const senderNumber = senderJid.replace('@s.whatsapp.net', '')
+  // WhatsApp now delivers some chats with remoteJid in @lid (Linked Identity
+  // Domain) format. The phone JID is in remoteJidAlt. Normalize so downstream
+  // (channel chat_id, reply tool) always sees @s.whatsapp.net.
+  const rawJid: string = key.remoteJid || ''
+  const phoneJid: string = rawJid.endsWith('@lid') && key.remoteJidAlt
+    ? key.remoteJidAlt
+    : rawJid
+  const senderNumber = phoneJid
+    .replace(/@s\.whatsapp\.net$/, '')
+    .replace(/:\d+$/, '')
   if (senderNumber !== OWNER_WHATSAPP_NUMBER) return
+  const senderJid = `${senderNumber}@s.whatsapp.net`
 
   const msgId: string | undefined = key.id
   if (msgId && seenMessages.has(msgId)) return
