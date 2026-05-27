@@ -1,0 +1,27 @@
+[Unit]
+Description=Hermes Gateway for %i (Evolution WhatsApp)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+WorkingDirectory=/home/%i
+Environment=HOME=/home/%i
+Environment=HERMES_HOME=/home/%i/.hermes
+Environment=PATH=/opt/hermes/venv/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=/opt/hermes/.env
+EnvironmentFile=/home/%i/.hermes/.env
+ExecStart=/opt/hermes/venv/bin/hermes gateway run --accept-hooks
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=210
+NoNewPrivileges=true
+PrivateTmp=true
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hermes-gw-%i
+
+[Install]
+WantedBy=multi-user.target

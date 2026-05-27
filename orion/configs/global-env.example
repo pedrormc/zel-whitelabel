@@ -1,0 +1,16 @@
+# Orion Server — Global Secrets
+# Copy to /opt/hermes/.env
+
+# Evolution API (shared single number)
+EVOLUTION_URL=https://your-evolution.example.com
+EVOLUTION_INSTANCE=YourInstance
+EVOLUTION_APIKEY=your-evolution-api-key
+
+# OpenAI (optional — for embeddings)
+OPENAI_API_KEY=
+
+# Qdrant (optional — for Singular Memory)
+QDRANT_URL=
+
+# Claude Max auth is handled via OAuth (hermes auth / claude login)
+# Do NOT set ANTHROPIC_API_KEY here — it conflicts with OAuth refresh

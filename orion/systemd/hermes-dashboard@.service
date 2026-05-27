@@ -1,0 +1,23 @@
+[Unit]
+Description=Hermes Dashboard for Adonai
+After=hermes-gateway@adonai.service
+
+[Service]
+Type=simple
+User=adonai
+Group=adonai
+WorkingDirectory=/home/adonai
+Environment=HOME=/home/adonai
+Environment=HERMES_HOME=/home/adonai/.hermes
+Environment=PATH=/opt/hermes/venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=HERMES_DASHBOARD_TUI=1
+ExecStart=/opt/hermes/venv/bin/hermes dashboard --port 9119 --host 0.0.0.0 --no-open --tui --skip-build --insecure
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=15
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hermes-dash-adonai
+
+[Install]
+WantedBy=multi-user.target

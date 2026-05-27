@@ -1,0 +1,20 @@
+# Zel Instance — Hermes Gateway Config
+# Copy to /home/<user>/.hermes/.env and fill in values
+
+# Instance identity
+ZEL_USER=adonai
+ZEL_OWNER_NAME=Adonai
+ZEL_BRIDGE_PORT=3001
+
+# Gateway access (set true for shared number routing)
+GATEWAY_ALLOW_ALL_USERS=true
+
+# WhatsApp config
+WHATSAPP_MODE=bot
+WHATSAPP_DM_POLICY=open
+WHATSAPP_GROUP_POLICY=disabled
+
+# Evolution API (shared number)
+EVOLUTION_URL=https://your-evolution.example.com
+EVOLUTION_INSTANCE=YourInstance
+EVOLUTION_APIKEY=your-evolution-api-key

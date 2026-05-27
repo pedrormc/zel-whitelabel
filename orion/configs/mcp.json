@@ -1,0 +1,37 @@
+{
+  "mcpServers": {
+    "hubspot-primary": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@hubspot/mcp-server"],
+      "env": {
+        "PRIVATE_APP_ACCESS_TOKEN": "YOUR_HUBSPOT_TOKEN"
+      }
+    },
+    "n8n-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "n8n-mcp"],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true",
+        "N8N_API_URL": "https://your-n8n.example.com",
+        "N8N_API_KEY": "YOUR_N8N_API_KEY"
+      }
+    },
+    "serpapi": {
+      "type": "http",
+      "url": "https://mcp.serpapi.com/YOUR_SERPAPI_KEY/mcp"
+    },
+    "google-drive": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/usr/lib/node_modules/@piotr-agier/google-drive-mcp/dist/index.js"],
+      "env": {
+        "GOOGLE_DRIVE_OAUTH_CREDENTIALS": "/home/YOUR_USER/.claude/secrets/gcp-oauth.keys.json",
+        "GOOGLE_DRIVE_MCP_TOKEN_PATH": "/home/YOUR_USER/.claude/secrets/gcp-oauth.token.json"
+      }
+    }
+  }
+}
