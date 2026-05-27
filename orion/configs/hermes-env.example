@@ -18,3 +18,15 @@ WHATSAPP_GROUP_POLICY=disabled
 EVOLUTION_URL=https://your-evolution.example.com
 EVOLUTION_INSTANCE=YourInstance
 EVOLUTION_APIKEY=your-evolution-api-key
+
+# Phone filter — only process messages from these numbers (comma-separated)
+# Leave empty to accept all
+ALLOWED_PHONES=
+
+# Groq (free) — audio transcription + image understanding
+# Get free key at https://console.groq.com (no credit card needed)
+GROQ_API_KEY=your-groq-api-key
+
+# Qdrant RAG (optional — Singular Memory)
+QDRANT_URL=http://your-qdrant:6333
+QDRANT_API_KEY=your-qdrant-api-key

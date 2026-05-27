@@ -36,7 +36,11 @@ Each Hermes Gateway:
 | MCPs | HubSpot, n8n, SerpAPI, Google Drive |
 | Personality | Full playbook persona via HERMES.md |
 | Dashboard | Web UI at /hermes/<user>/ with live chat |
+| Audio (STT) | Groq Whisper free — transcribes voice messages automatically |
+| Image (Vision) | Groq Vision free — describes images sent via WhatsApp |
+| Phone Filter | ALLOWED_PHONES per instance — multi-user single-number routing |
 | Memory | Persistent memory + session search |
+| RAG | Qdrant vector DB integration for organizational knowledge |
 | Token Refresh | Automatic OAuth renewal every 4h via cron |
 
 ## Quick Start
@@ -129,7 +133,42 @@ Point Evolution's webhook to your Orion server:
 curl -X POST "https://your-evolution/webhook/set/YourInstance" \
   -H "apikey: YOUR_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"webhook":{"url":"https://your-domain/adonai/","enabled":true,"events":["MESSAGES_UPSERT"]}}'
+  -d '{"webhook":{"url":"https://your-domain/webhook/","enabled":true,"events":["MESSAGES_UPSERT"]}}'
+```
+
+Use `/webhook/` endpoint for multi-user fanout (nginx mirrors to all gateways, each filters by `ALLOWED_PHONES`).
+
+## Media Support (Audio + Images)
+
+The Evolution adapter processes audio and images automatically using Groq's free API.
+
+### Setup
+
+1. Get a free API key at [console.groq.com](https://console.groq.com) (no credit card)
+2. Add to `.env`: `GROQ_API_KEY=gsk_your_key`
+
+### How it works
+
+| Media | Processing | Free Limit |
+|-------|-----------|------------|
+| Audio | Evolution downloads -> Groq Whisper transcribes -> text to Claude | 8h audio/day |
+| Image | Evolution downloads -> Groq Vision describes -> text to Claude | 14,400 req/day |
+| Video | Caption only (transcription not yet supported) | - |
+
+### Audio flow
+```
+User records voice -> WhatsApp -> Evolution -> adapter detects audioMessage
+  -> downloads base64 via Evolution API
+  -> sends to Groq Whisper (whisper-large-v3-turbo, language=pt)
+  -> transcribed text becomes the message for Hermes
+```
+
+### Image flow
+```
+User sends photo -> WhatsApp -> Evolution -> adapter detects imageMessage
+  -> downloads base64 via Evolution API
+  -> sends to Groq Vision (llama-4-scout-17b)
+  -> image description becomes context for Hermes
 ```
 
 ## Dashboard Setup (Optional)
