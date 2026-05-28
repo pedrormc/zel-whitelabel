@@ -81,10 +81,13 @@ async def _download_media_base64(session: aiohttp.ClientSession, msg_id: str) ->
     body = {"message": {"key": {"id": msg_id}}, "convertToMp4": False}
     try:
         async with session.post(url, json=body, headers=headers, timeout=aiohttp.ClientTimeout(total=30)) as resp:
-            if resp.status == 200:
+            # Evolution API returns 201 Created for getBase64FromMediaMessage
+            # (and 200 on older versions). Accept any 2xx.
+            if resp.ok:
                 data = await resp.json()
                 return data.get("base64", None)
-            log.error(f"Media download failed: {resp.status}")
+            body_preview = (await resp.text())[:300]
+            log.error(f"Media download failed: status={resp.status} body={body_preview!r}")
             return None
     except Exception as e:
         log.error(f"Media download error: {e}")
