@@ -210,9 +210,12 @@ orion/
     mcp.json                # MCP server configs (HubSpot, n8n, SerpAPI, GDrive)
     hermes-env.example      # Per-instance .env template
     global-env.example      # Global secrets template
+    silent-profile.example.yaml  # Reference for silent gateway profile
   scripts/
     refresh-token.py        # OAuth token auto-refresh (cron every 4h)
     setup-zel-instance.sh   # Automated instance setup
+    apply-zel-silent-profile.py  # Apply silent profile to a Zel's config.yaml
+    validate-zel-config.py  # Print resolved gateway/display settings per user
   systemd/
     hermes-gateway@.service # Gateway systemd template
     hermes-dashboard@.service # Dashboard systemd template
@@ -225,10 +228,48 @@ orion/
   patches/
     fix-dashboard-cors.py   # Patch dashboard for external access
     build-tui.sh            # Build dashboard TUI from source
+    patch-hermes-suppress-system-notifications.py  # Silent profile guards
   docs/
     ARCHITECTURE.md         # Full architecture documentation
     TROUBLESHOOTING.md      # Common issues and fixes
+    HERMES-SILENT-PROFILE.md  # Eliminate gateway noise on WhatsApp / one-way channels
 ```
+
+## Silent Gateway Profile (recommended for WhatsApp)
+
+By default Hermes ships with verbose terminal-style notifications
+(`⚡ Interrupting current task`, `⏳ Still working...`, `💾 Self-improvement
+review`, etc.) that leak into the user's WhatsApp chat via Evolution and
+add no signal on a mobile / one-way channel.
+
+The silent profile turns that off in three layers:
+
+1. **Custom patches** add `gateway.suppress_*` flags inside `gateway/run.py`
+2. **Official `display.*` flags** (busy_ack_enabled, busy_input_mode=queue,
+   interim_assistant_messages, long_running_notifications, streaming, ...)
+3. **Per-platform overrides** `display.platforms.{evolution,whatsapp}.*`
+
+Bootstrap (one-time, shared venv):
+
+```bash
+sudo python3 /opt/zel/orion/patches/patch-hermes-suppress-system-notifications.py
+```
+
+Per Zel (opt-in):
+
+```bash
+sudo /opt/hermes/venv/bin/python3 /opt/zel/orion/scripts/apply-zel-silent-profile.py --user adonai
+sudo systemctl restart hermes-gateway@adonai.service
+```
+
+Verify:
+
+```bash
+sudo -u adonai /opt/hermes/venv/bin/python3 /opt/zel/orion/scripts/validate-zel-config.py
+```
+
+Full docs and reverting instructions in
+[`docs/HERMES-SILENT-PROFILE.md`](docs/HERMES-SILENT-PROFILE.md).
 
 ## Token Lifecycle
 

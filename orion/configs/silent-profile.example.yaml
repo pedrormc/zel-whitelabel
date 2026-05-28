@@ -1,0 +1,63 @@
+# Hermes gateway — "silent execution" profile (example)
+#
+# Drop these blocks into ~/.hermes/config.yaml (deep-merge — preserves your
+# other keys) or use scripts/apply-zel-silent-profile.py which does the
+# merge for you with a timestamped backup.
+#
+# WHY: WhatsApp / Signal / SMS are one-way, mobile, no-edit channels. The
+# default Hermes verbosity (tool breadcrumbs, busy acks, heartbeats,
+# self-improvement reviews, mid-turn updates) creates user-side noise that
+# doesn't add signal. The silent profile turns all of that off while
+# keeping real errors and the final response intact.
+#
+# Requires the gateway.suppress_* flags to be wired via the companion patch:
+#   patches/patch-hermes-suppress-system-notifications.py
+# The display.* flags are official Hermes and work without the patch.
+
+gateway:
+  # Suppress "⚡ Interrupting current task" / "⏳ Queued" / "⏩ Steered"
+  suppress_busy_ack: true
+  # Suppress "💾 Self-improvement review: ..."
+  suppress_self_improvement: true
+  # Suppress "⏳ Still working... (N min elapsed)" heartbeats
+  suppress_heartbeat: true
+  # Suppress "⚠️ No activity for N min" inactivity warnings
+  suppress_inactivity_warning: true
+
+display:
+  # Official Hermes — same effect as gateway.suppress_busy_ack but native flag
+  busy_ack_enabled: false
+  busy_ack_detail: false
+  # When the user sends a message while Hermes is busy, queue it (no interrupt,
+  # no ack) instead of the default "interrupt + ack" behaviour
+  busy_input_mode: queue
+  # No mid-turn assistant commentary (only the final reply)
+  interim_assistant_messages: false
+  # No "⏳ Working — N min" heartbeats (also covered by gateway.suppress_heartbeat)
+  long_running_notifications: false
+  # Background process watcher (terminal background=true): only surface errors
+  background_process_notifications: error
+  # No auto-delete of progress bubbles (Evolution can't delete anyway)
+  cleanup_progress: false
+  # No reasoning box in the response
+  show_reasoning: false
+  # No token streaming (WhatsApp/Evolution can't edit, so streaming = spam)
+  streaming: false
+
+  platforms:
+    # Per-platform overrides resolved by gateway/display_config.py.
+    # Evolution adapter uses platform key "evolution" (see Platform("evolution")
+    # in evolution.py). WhatsApp Baileys uses "whatsapp". Set both so the
+    # config is robust to adapter swaps.
+    evolution:
+      tool_progress: off       # No tool breadcrumbs per call
+      show_reasoning: false
+      tool_preview_length: 0   # No arg/result preview
+      streaming: false
+      cleanup_progress: false
+    whatsapp:
+      tool_progress: off
+      show_reasoning: false
+      tool_preview_length: 0
+      streaming: false
+      cleanup_progress: false

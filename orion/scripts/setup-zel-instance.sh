@@ -111,6 +111,23 @@ systemctl daemon-reload
 systemctl enable hermes-gateway@$USER
 echo "  Service: hermes-gateway@$USER"
 
+# Silent gateway profile (opt-out via SILENT_PROFILE=false)
+# Suppresses Hermes' interactive notifications on WhatsApp — see docs/HERMES-SILENT-PROFILE.md
+if [ "${SILENT_PROFILE:-true}" != "false" ]; then
+    echo "=== Applying silent gateway profile ==="
+    # 1) Patch the shared venv copy of gateway/run.py (idempotent; harmless if already patched)
+    if [ -f "$SCRIPT_DIR/patches/patch-hermes-suppress-system-notifications.py" ]; then
+        python3 "$SCRIPT_DIR/patches/patch-hermes-suppress-system-notifications.py" || \
+            echo "  WARN: patch script failed (continuing without silent guards)"
+    fi
+    # 2) Deep-merge the silent profile into this user's config.yaml
+    sudo -u $USER HOME=/home/$USER "$HERMES_VENV/bin/python3" \
+        "$SCRIPT_DIR/scripts/apply-zel-silent-profile.py" --user "$USER" || \
+        echo "  WARN: silent profile apply failed (continuing)"
+    echo "  Silent profile applied — gateway will be quiet on WhatsApp"
+    echo "  To opt out next time: SILENT_PROFILE=false bash $0 ..."
+fi
+
 echo ""
 echo "============================================"
 echo "  Zel instance '$USER' ($OWNER) configured!"
