@@ -14,6 +14,14 @@
 #   patches/patch-hermes-suppress-system-notifications.py
 # The display.* flags are official Hermes and work without the patch.
 
+agent:
+  # Disable heartbeat at the source (Hermes' own knob; the suppress_heartbeat
+  # patch is a second safety net).
+  gateway_notify_interval: 0
+  # Disable the staged inactivity warning at the source (suppress_inactivity_warning
+  # is the fallback).
+  gateway_timeout_warning: 0
+
 gateway:
   # Suppress "⚡ Interrupting current task" / "⏳ Queued" / "⏩ Steered"
   suppress_busy_ack: true

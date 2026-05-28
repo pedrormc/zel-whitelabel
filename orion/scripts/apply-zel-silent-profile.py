@@ -24,6 +24,12 @@ import pathlib, datetime, shutil, sys, argparse, yaml
 
 # Canonical silent profile (deep-merged into the target config).
 PROFILE = {
+    "agent": {
+        # Disable heartbeat at the source (the patch covers anything that still fires).
+        "gateway_notify_interval": 0,
+        # Disable the staged inactivity warning at the source.
+        "gateway_timeout_warning": 0,
+    },
     "gateway": {
         # Custom patches — require patch-hermes-suppress-system-notifications.py
         "suppress_busy_ack": True,
